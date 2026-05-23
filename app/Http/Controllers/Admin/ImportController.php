@@ -12,6 +12,12 @@ use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class ImportController extends Controller
 {
@@ -37,7 +43,6 @@ class ImportController extends Controller
             'status' => 'pending',
         ]);
 
-        // Parse Excel for preview
         $data = $this->parseExcel(storage_path('app/public/' . $path));
 
         return view('admin.import.preview', compact('data', 'importLog'));
@@ -63,24 +68,21 @@ class ImportController extends Controller
         foreach ($data as $index => $row) {
             try {
                 if (empty($row['nomor_mou']) || empty($row['nama_lembaga'])) {
-                    $errors[] = "Baris " . ($index + 2) . ": Data tidak lengkap";
+                    $errors[] = "Baris " . ($index + 2) . ": nomor_mou atau nama_lembaga kosong";
                     $failed++;
                     continue;
                 }
 
-                // Check duplicate
                 if (Mou::where('mou_number', $row['nomor_mou'])->exists()) {
                     $duplicates++;
                     continue;
                 }
 
-                // Get or create institution
                 $institution = Institution::firstOrCreate(
                     ['name' => $row['nama_lembaga']],
                     ['slug' => Str::slug($row['nama_lembaga']), 'type' => 'lainnya']
                 );
 
-                // Get category
                 $category = null;
                 if (!empty($row['kategori'])) {
                     $category = Category::firstOrCreate(
@@ -89,7 +91,6 @@ class ImportController extends Controller
                     );
                 }
 
-                // Get faculty
                 $faculty = null;
                 if (!empty($row['fakultas'])) {
                     $faculty = Faculty::firstOrCreate(
@@ -108,14 +109,14 @@ class ImportController extends Controller
                     'institution_id' => $institution->id,
                     'category_id' => $category?->id,
                     'faculty_id' => $faculty?->id,
-                    'level' => $row['tingkat'] ?? 'nasional',
-                    'type' => $row['jenis_kerjasama'] ?? 'akademik',
+                    'level' => $this->mapLevel($row['tingkat'] ?? 'nasional'),
+                    'type' => $this->mapType($row['jenis_kerjasama'] ?? 'akademik'),
                     'cooperation_type' => 'mou',
                     'start_date' => $startDate ?? now(),
                     'end_date' => $endDate ?? now()->addYears(2),
-                    'visibility' => $row['visibility'] ?? 'internal',
+                    'visibility' => in_array(strtolower($row['visibility'] ?? ''), ['public', 'internal']) ? strtolower($row['visibility']) : 'internal',
                     'description' => $row['deskripsi'] ?? null,
-                    'status' => $row['status'] ?? 'aktif',
+                    'status' => $this->mapStatus($row['status'] ?? 'aktif'),
                     'created_by' => auth()->guard('admin')->id(),
                 ]);
 
@@ -133,12 +134,7 @@ class ImportController extends Controller
             'failed_count' => $failed,
             'duplicate_count' => $duplicates,
             'errors' => $errors ?: null,
-            'summary' => [
-                'total' => count($data),
-                'success' => $success,
-                'failed' => $failed,
-                'duplicates' => $duplicates,
-            ],
+            'summary' => ['total' => count($data), 'success' => $success, 'failed' => $failed, 'duplicates' => $duplicates],
         ]);
 
         ActivityLogService::log('import', null, "Import data: {$success} berhasil, {$failed} gagal, {$duplicates} duplikat");
@@ -148,21 +144,70 @@ class ImportController extends Controller
 
     public function downloadTemplate()
     {
-        $templatePath = resource_path('templates/import_template.xlsx');
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Template Import MoU');
 
-        if (!file_exists($templatePath)) {
-            // Generate simple CSV template as fallback
-            $headers = ['nomor_mou', 'judul', 'nama_lembaga', 'kategori', 'tanggal_mulai', 'tanggal_selesai', 'status', 'fakultas', 'jenis_kerjasama', 'visibility', 'deskripsi'];
-            $example = ['MOU/001/2024', 'Kerjasama Pendidikan', 'Universitas Contoh', 'Pendidikan', '2024-01-01', '2026-01-01', 'aktif', 'Fakultas Teknik', 'akademik', 'public', 'Deskripsi kerjasama'];
-
-            $csv = implode(',', $headers) . "\n" . implode(',', $example);
-
-            return response($csv)
-                ->header('Content-Type', 'text/csv')
-                ->header('Content-Disposition', 'attachment; filename="template_import_mou.csv"');
+        $headers = ['nomor_mou', 'judul', 'nama_lembaga', 'kategori', 'tanggal_mulai', 'tanggal_selesai', 'status', 'fakultas', 'jenis_kerjasama', 'tingkat', 'visibility', 'deskripsi'];
+        foreach ($headers as $i => $h) {
+            $sheet->setCellValueByColumnAndRow($i + 1, 1, $h);
         }
 
-        return response()->download($templatePath, 'template_import_mou.xlsx');
+        $headerStyle = [
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '2563EB']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+        ];
+        $sheet->getStyle('A1:L1')->applyFromArray($headerStyle);
+
+        // Example rows
+        $examples = [
+            ['MOU/UMMADA/001/2024', 'Kerjasama Tri Dharma', 'Universitas Indonesia', 'Pendidikan & Pengajaran', '2024-01-15', '2027-01-15', 'aktif', 'Fakultas Teknik', 'akademik', 'nasional', 'public', 'Kerjasama bidang pendidikan.'],
+            ['MOU/UMMADA/002/2024', 'Program Magang MBKM', 'PT Telkom Indonesia', 'Magang & MBKM', '2024-03-01', '2026-03-01', 'aktif', 'Fakultas Teknik', 'mbkm', 'nasional', 'public', 'Program magang bersertifikat.'],
+            ['MOU/UMMADA/003/2023', 'Pertukaran Mahasiswa', 'Universiti Malaya', 'Beasiswa & Pertukaran', '2023-08-01', '2026-08-01', 'aktif', '', 'internasional', 'internasional', 'public', 'Program pertukaran mahasiswa.'],
+        ];
+
+        foreach ($examples as $rowIdx => $row) {
+            foreach ($row as $colIdx => $val) {
+                $sheet->setCellValueByColumnAndRow($colIdx + 1, $rowIdx + 2, $val);
+            }
+        }
+
+        $sheet->getStyle('A2:L4')->applyFromArray([
+            'font' => ['italic' => true, 'color' => ['rgb' => '6B7280']],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+        ]);
+
+        foreach (range('A', 'L') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Instruction sheet
+        $info = $spreadsheet->createSheet();
+        $info->setTitle('Petunjuk');
+        $info->setCellValue('A1', 'PETUNJUK IMPORT DATA MoU');
+        $info->setCellValue('A3', 'Kolom Wajib: nomor_mou, nama_lembaga');
+        $info->setCellValue('A4', 'Format Tanggal: YYYY-MM-DD (contoh: 2024-01-15)');
+        $info->setCellValue('A6', 'Nilai status: aktif, akan_expire, expire');
+        $info->setCellValue('A7', 'Nilai jenis_kerjasama: akademik, penelitian, mbkm, industri, pengabdian, pemerintah, internasional');
+        $info->setCellValue('A8', 'Nilai tingkat: lokal, nasional, internasional');
+        $info->setCellValue('A9', 'Nilai visibility: public, internal');
+        $info->setCellValue('A11', 'Catatan:');
+        $info->setCellValue('A12', '- Institusi/kategori/fakultas baru otomatis dibuat jika belum ada');
+        $info->setCellValue('A13', '- Nomor MoU duplikat akan di-skip');
+        $info->setCellValue('A14', '- Hapus baris contoh (2-4) sebelum mengisi data Anda');
+        $info->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $info->getColumnDimension('A')->setWidth(80);
+
+        $spreadsheet->setActiveSheetIndex(0);
+
+        $fileName = 'template_import_mou.xlsx';
+        $tempPath = storage_path('app/' . $fileName);
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($tempPath);
+
+        return response()->download($tempPath, $fileName)->deleteFileAfterSend(true);
     }
 
     public function logs()
@@ -174,24 +219,31 @@ class ImportController extends Controller
     private function parseExcel(string $filePath): array
     {
         $data = [];
+        if (!file_exists($filePath)) return $data;
 
-        if (!file_exists($filePath)) {
-            return $data;
-        }
+        try {
+            $spreadsheet = IOFactory::load($filePath);
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
 
-        // Simple CSV/Excel parsing
-        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+            if (count($rows) < 2) return $data;
 
-        if (in_array($extension, ['csv', 'txt'])) {
-            $handle = fopen($filePath, 'r');
-            $headers = fgetcsv($handle);
+            $headers = array_map(fn($h) => strtolower(trim(str_replace(' ', '_', $h ?? ''))), $rows[0]);
 
-            while (($row = fgetcsv($handle)) !== false) {
-                if (count($row) === count($headers)) {
-                    $data[] = array_combine($headers, $row);
+            for ($i = 1; $i < count($rows); $i++) {
+                $row = $rows[$i];
+                if (empty(array_filter($row))) continue;
+
+                $rowData = [];
+                foreach ($headers as $index => $header) {
+                    if (!empty($header)) {
+                        $rowData[$header] = trim($row[$index] ?? '');
+                    }
                 }
+                $data[] = $rowData;
             }
-            fclose($handle);
+        } catch (\Exception $e) {
+            \Log::warning('Excel parse error: ' . $e->getMessage());
         }
 
         return $data;
@@ -200,11 +252,32 @@ class ImportController extends Controller
     private function parseDate(?string $date): ?string
     {
         if (empty($date)) return null;
-
         try {
+            if (is_numeric($date)) {
+                return Carbon::createFromFormat('Y-m-d', gmdate('Y-m-d', ($date - 25569) * 86400))->format('Y-m-d');
+            }
             return Carbon::parse($date)->format('Y-m-d');
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    private function mapLevel(string $level): string
+    {
+        $level = strtolower(trim($level));
+        return in_array($level, ['lokal', 'nasional', 'internasional']) ? $level : 'nasional';
+    }
+
+    private function mapType(string $type): string
+    {
+        $type = strtolower(trim($type));
+        $valid = ['akademik', 'penelitian', 'mbkm', 'industri', 'pengabdian', 'pemerintah', 'internasional'];
+        return in_array($type, $valid) ? $type : 'akademik';
+    }
+
+    private function mapStatus(string $status): string
+    {
+        $status = strtolower(trim($status));
+        return in_array($status, ['aktif', 'akan_expire', 'expire']) ? $status : 'aktif';
     }
 }
