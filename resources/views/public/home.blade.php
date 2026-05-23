@@ -7,7 +7,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div class="text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">Repository Kerjasama</h1>
-            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Sistem Informasi MoU & Kerjasama<br>Universitas Muhammadiyah Majalengka Daerah Cirebon</p>
+            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Sistem Informasi MoU & Kerjasama<br>Universitas Muhammadiyah Ahmad Dahlan Cirebon</p>
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="{{ route('kerjasama.index') }}" class="px-6 py-3 bg-white text-blue-700 font-semibold rounded-lg hover:bg-blue-50 transition shadow-lg">
                     <i class="fas fa-handshake mr-2"></i> Lihat Kerjasama

@@ -9,7 +9,7 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border p-8 prose max-w-none">
-        <h2>Universitas Muhammadiyah Majalengka Daerah Cirebon</h2>
+        <h2>Universitas Muhammadiyah Ahmad Dahlan Cirebon</h2>
         <p>SIMoU (Sistem Informasi Memorandum of Understanding) adalah platform digital yang digunakan untuk mengelola, mendokumentasikan, dan mempublikasikan seluruh kerjasama yang dilakukan oleh UMMADA Cirebon dengan berbagai institusi partner.</p>
 
         <h3>Tujuan Sistem</h3>

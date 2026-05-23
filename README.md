@@ -1,6 +1,6 @@
 # SIMoU - Sistem Informasi MoU UMMADA Cirebon
 
-Repository MoU/Kerjasama Kampus berbasis Web untuk Universitas Muhammadiyah Majalengka Daerah Cirebon.
+Repository MoU/Kerjasama Kampus berbasis Web untuk Universitas Muhammadiyah Ahmad Dahlan Cirebon.
 
 ## Tech Stack
 

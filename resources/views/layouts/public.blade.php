@@ -90,7 +90,7 @@
                             <span class="text-gray-400 block text-xs">UMMADA Cirebon</span>
                         </div>
                     </div>
-                    <p class="text-gray-400 text-sm">Sistem Informasi Repository MoU/Kerjasama Universitas Muhammadiyah Majalengka Daerah Cirebon.</p>
+                    <p class="text-gray-400 text-sm">Sistem Informasi Repository MoU/Kerjasama Universitas Muhammadiyah Ahmad Dahlan Cirebon.</p>
                 </div>
                 <div>
                     <h3 class="font-semibold mb-3">Link Cepat</h3>
