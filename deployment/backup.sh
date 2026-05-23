@@ -7,7 +7,7 @@
 
 set -e
 
-APP_DIR="/var/www/simou"
+APP_DIR="/home/htdocs/simou"
 BACKUP_DIR="/var/backups/simou"
 DATE=$(date +%Y%m%d_%H%M%S)
 RETENTION_DAYS=30

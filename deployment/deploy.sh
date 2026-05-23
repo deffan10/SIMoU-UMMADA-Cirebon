@@ -7,7 +7,7 @@
 
 set -e
 
-APP_DIR="/var/www/simou"
+APP_DIR="/home/htdocs/simou"
 BACKUP_DIR="/var/backups/simou"
 DATE=$(date +%Y%m%d_%H%M%S)
 
@@ -30,7 +30,7 @@ deploy_fresh() {
     php artisan key:generate
 
     echo "[4/8] Setting permissions..."
-    chown -R www-data:www-data $APP_DIR
+    chown -R www-data:www-data $APP_DIR/storage $APP_DIR/bootstrap/cache
     chmod -R 755 $APP_DIR
     chmod -R 775 $APP_DIR/storage $APP_DIR/bootstrap/cache
 
@@ -44,12 +44,15 @@ deploy_fresh() {
     php artisan view:cache
     php artisan storage:link
 
-    echo "[7/8] Setting up queue with PM2..."
+    echo "[7/8] Setting up Nginx..."
+    cp $APP_DIR/deployment/nginx.conf /etc/nginx/sites-available/simou.ummada.ac.id
+    ln -sf /etc/nginx/sites-available/simou.ummada.ac.id /etc/nginx/sites-enabled/
+    nginx -t
+
+    echo "[8/8] Starting services..."
     pm2 start $APP_DIR/deployment/pm2.config.js
     pm2 save
     pm2 startup
-
-    echo "[8/8] Restarting services..."
     systemctl restart php8.4-fpm
     systemctl restart nginx
 

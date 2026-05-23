@@ -41,7 +41,7 @@ FLUSH PRIVILEGES;
 
 ```bash
 # Clone
-cd /var/www
+cd /home/htdocs
 git clone https://github.com/deffan10/SIMoU-UMMADA-Cirebon.git simou
 cd simou
 
@@ -60,9 +60,9 @@ php artisan db:seed --force
 php artisan storage:link
 
 # Permissions
-chown -R www-data:www-data /var/www/simou
-chmod -R 755 /var/www/simou
-chmod -R 775 /var/www/simou/storage /var/www/simou/bootstrap/cache
+chown -R www-data:www-data /home/htdocs/simou/storage /home/htdocs/simou/bootstrap/cache
+chmod -R 755 /home/htdocs/simou
+chmod -R 775 /home/htdocs/simou/storage /home/htdocs/simou/bootstrap/cache
 
 # Optimize
 php artisan config:cache
@@ -73,8 +73,8 @@ php artisan view:cache
 ### 5. Konfigurasi Nginx
 
 ```bash
-cp /var/www/simou/deployment/nginx.conf /etc/nginx/sites-available/simou
-ln -s /etc/nginx/sites-available/simou /etc/nginx/sites-enabled/
+cp /home/htdocs/simou/deployment/nginx.conf /etc/nginx/sites-available/simou.ummada.ac.id
+ln -s /etc/nginx/sites-available/simou.ummada.ac.id /etc/nginx/sites-enabled/
 nginx -t
 systemctl restart nginx
 ```
@@ -90,7 +90,7 @@ certbot --nginx -d simou.ummada.ac.id
 ### 7. Setup Queue Workers (PM2)
 
 ```bash
-pm2 start /var/www/simou/deployment/pm2.config.js
+pm2 start /home/htdocs/simou/deployment/pm2.config.js
 pm2 save
 pm2 startup
 ```
@@ -98,15 +98,15 @@ pm2 startup
 ### 8. Setup Backup Cron
 
 ```bash
-chmod +x /var/www/simou/deployment/backup.sh
+chmod +x /home/htdocs/simou/deployment/backup.sh
 crontab -e
-# Add: 0 2 * * * /var/www/simou/deployment/backup.sh
+# Add: 0 2 * * * /home/htdocs/simou/deployment/backup.sh
 ```
 
 ## Updating
 
 ```bash
-cd /var/www/simou
+cd /home/htdocs/simou
 ./deployment/deploy.sh update
 ```
 
