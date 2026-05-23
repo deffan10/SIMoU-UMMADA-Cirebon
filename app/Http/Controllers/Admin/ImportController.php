@@ -161,6 +161,10 @@ class ImportController extends Controller
         ];
         $sheet->getStyle('A1:L1')->applyFromArray($headerStyle);
 
+        // Set kolom tanggal (E & F) sebagai TEXT agar Excel tidak auto-format
+        $sheet->getStyle('E:E')->getNumberFormat()->setFormatCode('@');
+        $sheet->getStyle('F:F')->getNumberFormat()->setFormatCode('@');
+
         // Example rows
         $examples = [
             ['MOU/UMMADA/001/2024', 'Kerjasama Tri Dharma', 'Universitas Indonesia', 'Pendidikan & Pengajaran', '2024-01-15', '2027-01-15', 'aktif', 'Fakultas Teknik', 'akademik', 'nasional', 'public', 'Kerjasama bidang pendidikan.'],
@@ -170,7 +174,12 @@ class ImportController extends Controller
 
         foreach ($examples as $rowIdx => $row) {
             foreach ($row as $colIdx => $val) {
-                $sheet->setCellValueByColumnAndRow($colIdx + 1, $rowIdx + 2, $val);
+                // Kolom tanggal (index 4 & 5) set explicit sebagai string
+                if ($colIdx === 4 || $colIdx === 5) {
+                    $sheet->setCellValueExplicitByColumnAndRow($colIdx + 1, $rowIdx + 2, $val, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                } else {
+                    $sheet->setCellValueByColumnAndRow($colIdx + 1, $rowIdx + 2, $val);
+                }
             }
         }
 
@@ -179,9 +188,25 @@ class ImportController extends Controller
             'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
         ]);
 
+        // Highlight kolom tanggal dengan warna kuning muda
+        $sheet->getStyle('E1:F1')->applyFromArray([
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'F59E0B']],
+        ]);
+        $sheet->getStyle('E2:F4')->applyFromArray([
+            'font' => ['italic' => true, 'color' => ['rgb' => '92400E']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'FEF3C7']],
+        ]);
+
         foreach (range('A', 'L') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
+
+        // Tambah note di baris 6 sebagai reminder format tanggal
+        $sheet->setCellValue('E6', 'FORMAT: YYYY-MM-DD');
+        $sheet->setCellValue('F6', 'FORMAT: YYYY-MM-DD');
+        $sheet->getStyle('E6:F6')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 9, 'color' => ['rgb' => 'DC2626']],
+        ]);
 
         // Instruction sheet
         $info = $spreadsheet->createSheet();
@@ -189,19 +214,22 @@ class ImportController extends Controller
         $info->setCellValue('A1', 'PETUNJUK IMPORT DATA MoU');
         $info->setCellValue('A3', 'Kolom Wajib: nomor_mou, nama_lembaga');
         $info->setCellValue('A4', 'Format Tanggal: YYYY-MM-DD (contoh: 2024-01-15)');
-        $info->setCellValue('A6', 'Nilai status: aktif, akan_expire, expire');
-        $info->setCellValue('A7', 'Nilai jenis_kerjasama: akademik, penelitian, mbkm, industri, pengabdian, pemerintah, internasional');
-        $info->setCellValue('A8', 'Nilai tingkat: lokal, nasional, internasional');
-        $info->setCellValue('A9', 'Nilai visibility: public, internal');
-        $info->setCellValue('A11', 'Catatan:');
-        $info->setCellValue('A12', '- Gunakan nama yang PERSIS SAMA dengan daftar di bawah agar tidak duplikat');
-        $info->setCellValue('A13', '- Jika nama institusi/kategori/fakultas tidak ada di daftar, akan otomatis dibuat baru');
-        $info->setCellValue('A14', '- Nomor MoU yang sudah ada di database akan di-skip (tidak diimport ulang)');
-        $info->setCellValue('A15', '- Hapus baris contoh (2-4) di sheet Template sebelum mengisi data Anda');
+        $info->setCellValue('A5', '  → Kolom tanggal sudah di-set sebagai TEXT. Ketik langsung: 2024-01-15');
+        $info->setCellValue('A6', '  → JANGAN format sebagai Date di Excel, biarkan sebagai Text.');
+        $info->setCellValue('A8', 'Nilai status: aktif, akan_expire, expire');
+        $info->setCellValue('A9', 'Nilai jenis_kerjasama: akademik, penelitian, mbkm, industri, pengabdian, pemerintah, internasional');
+        $info->setCellValue('A10', 'Nilai tingkat: lokal, nasional, internasional');
+        $info->setCellValue('A11', 'Nilai visibility: public, internal');
+        $info->setCellValue('A13', 'Catatan:');
+        $info->setCellValue('A14', '- Gunakan nama yang PERSIS SAMA dengan daftar di sheet Kategori/Fakultas/Institusi');
+        $info->setCellValue('A15', '- Jika nama tidak ada di daftar, akan otomatis dibuat baru');
+        $info->setCellValue('A16', '- Nomor MoU yang sudah ada di database akan di-skip (tidak diimport ulang)');
+        $info->setCellValue('A17', '- Hapus baris contoh (2-4) di sheet Template sebelum mengisi data Anda');
         $info->getStyle('A1')->getFont()->setBold(true)->setSize(14);
         $info->getStyle('A3')->getFont()->setBold(true);
-        $info->getStyle('A11')->getFont()->setBold(true);
-        $info->getColumnDimension('A')->setWidth(80);
+        $info->getStyle('A5:A6')->getFont()->setItalic(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('DC2626'));
+        $info->getStyle('A13')->getFont()->setBold(true);
+        $info->getColumnDimension('A')->setWidth(85);
 
         // === REFERENSI DATA DARI DATABASE ===
 
