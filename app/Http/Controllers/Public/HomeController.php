@@ -68,6 +68,7 @@ class HomeController extends Controller
 
     public function tentang()
     {
-        return view('public.tentang');
+        $aboutContent = \App\Models\SiteSetting::get('about_content');
+        return view('public.tentang', compact('aboutContent'));
     }
 }

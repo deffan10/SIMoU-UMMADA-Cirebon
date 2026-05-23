@@ -71,6 +71,25 @@ class SettingsController extends Controller
         return redirect()->route('admin.login')->with('success', 'Password berhasil diubah. Silakan login kembali.');
     }
 
+    public function editAbout()
+    {
+        $aboutContent = SiteSetting::get('about_content', '');
+        return view('admin.settings.about', compact('aboutContent'));
+    }
+
+    public function updateAbout(Request $request)
+    {
+        $request->validate([
+            'about_content' => 'required|string|max:50000',
+        ]);
+
+        SiteSetting::set('about_content', strip_tags($request->about_content, '<h1><h2><h3><h4><h5><h6><p><br><ul><ol><li><a><strong><em><b><i><u><blockquote><hr><img><table><thead><tbody><tr><th><td>'));
+
+        ActivityLogService::log('update', null, 'Halaman Tentang diupdate');
+
+        return back()->with('success', 'Halaman Tentang berhasil diupdate.');
+    }
+
     public function updateLogo(Request $request)
     {
         $request->validate([

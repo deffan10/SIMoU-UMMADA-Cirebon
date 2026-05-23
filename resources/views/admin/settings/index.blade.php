@@ -3,6 +3,19 @@
 
 @section('content')
 <div class="max-w-2xl space-y-6">
+    <!-- Halaman Tentang -->
+    <div class="bg-white rounded-xl shadow-sm border p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="font-semibold text-gray-900"><i class="fas fa-file-alt text-indigo-500 mr-2"></i>Halaman Tentang</h3>
+                <p class="text-sm text-gray-500 mt-1">Edit konten halaman "Tentang" yang tampil di website publik.</p>
+            </div>
+            <a href="{{ route('admin.settings.about') }}" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700">
+                <i class="fas fa-edit mr-1"></i> Edit Konten
+            </a>
+        </div>
+    </div>
+
     <!-- Site Logo -->
     <div class="bg-white rounded-xl shadow-sm border p-6">
         <h3 class="font-semibold text-gray-900 mb-4"><i class="fas fa-image text-green-500 mr-2"></i>Logo Website</h3>

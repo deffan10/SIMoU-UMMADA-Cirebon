@@ -20,6 +20,7 @@ return new class extends Migration
             ['key' => 'site_logo', 'value' => null, 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'site_favicon', 'value' => null, 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'site_name', 'value' => 'SIMoU UMMADA Cirebon', 'created_at' => now(), 'updated_at' => now()],
+            ['key' => 'about_content', 'value' => null, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 
