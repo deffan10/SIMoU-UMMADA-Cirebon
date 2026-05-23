@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sistem Informasi MoU - {{ config('app.name') }}">
     <title>@yield('title', 'SIMoU') - {{ config('app.name') }}</title>
+    <link rel="icon" type="image/png" href="{{ $siteFavicon ?? asset('favicon.ico') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -21,9 +22,13 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2">
+                        @if($siteHasLogo ?? false)
+                        <img src="{{ $siteLogo }}" class="h-9 w-auto object-contain" alt="Logo">
+                        @else
                         <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                             <span class="text-white font-bold text-lg">M</span>
                         </div>
+                        @endif
                         <div class="hidden sm:block">
                             <span class="text-lg font-bold text-gray-900">SIMoU</span>
                             <span class="text-xs text-gray-500 block -mt-1">UMMADA Cirebon</span>
@@ -82,9 +87,13 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
+                        @if($siteHasLogo ?? false)
+                        <img src="{{ $siteLogo }}" class="h-9 w-auto object-contain" alt="Logo">
+                        @else
                         <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                             <span class="text-white font-bold text-lg">M</span>
                         </div>
+                        @endif
                         <div>
                             <span class="font-bold">SIMoU</span>
                             <span class="text-gray-400 block text-xs">UMMADA Cirebon</span>

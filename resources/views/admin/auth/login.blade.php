@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin - SIMoU</title>
+    <link rel="icon" type="image/png" href="{{ $siteFavicon ?? asset('favicon.ico') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         input[type="email"], input[type="password"] {
@@ -33,9 +34,15 @@
         <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
             <!-- Header -->
             <div class="text-center mb-8">
+                @if($siteHasLogo ?? false)
+                <div class="mb-4">
+                    <img src="{{ $siteLogo }}" class="h-16 w-auto mx-auto object-contain" alt="Logo">
+                </div>
+                @else
                 <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-blue-200">
                     <span class="text-white font-bold text-2xl">M</span>
                 </div>
+                @endif
                 <h1 class="text-2xl font-bold text-gray-900">SIMoU Admin</h1>
                 <p class="text-gray-500 text-sm mt-1">Login untuk mengelola data kerjasama</p>
             </div>

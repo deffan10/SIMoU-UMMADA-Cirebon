@@ -79,6 +79,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
         Route::put('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
         Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
+        Route::post('/settings/logo', [SettingsController::class, 'updateLogo'])->name('settings.logo');
+        Route::delete('/settings/logo', [SettingsController::class, 'removeLogo'])->name('settings.logo.remove');
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');

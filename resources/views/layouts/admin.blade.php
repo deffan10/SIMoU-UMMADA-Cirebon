@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') - SIMoU Admin</title>
+    <link rel="icon" type="image/png" href="{{ $siteFavicon ?? asset('favicon.ico') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -19,9 +20,13 @@
             <div class="flex flex-col w-full bg-gray-900 text-white transition-all duration-300">
                 <!-- Logo -->
                 <div class="flex items-center h-16 px-4 bg-gray-800">
+                    @if($siteHasLogo ?? false)
+                    <img src="{{ $siteLogo }}" class="h-7 w-auto object-contain flex-shrink-0" alt="Logo">
+                    @else
                     <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
                         <span class="text-white font-bold">M</span>
                     </div>
+                    @endif
                     <span x-show="sidebarOpen" class="ml-3 font-bold text-sm">SIMoU Admin</span>
                 </div>
 
@@ -75,9 +80,13 @@
             <div class="absolute inset-0 bg-black/50" @click="mobileSidebar = false"></div>
             <div class="relative w-64 bg-gray-900 h-full text-white overflow-y-auto">
                 <div class="flex items-center h-16 px-4 bg-gray-800">
+                    @if($siteHasLogo ?? false)
+                    <img src="{{ $siteLogo }}" class="h-7 w-auto object-contain" alt="Logo">
+                    @else
                     <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                         <span class="text-white font-bold">M</span>
                     </div>
+                    @endif
                     <span class="ml-3 font-bold text-sm">SIMoU Admin</span>
                 </div>
                 <nav class="py-4 px-2 space-y-1">
