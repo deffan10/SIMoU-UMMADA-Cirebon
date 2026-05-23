@@ -194,11 +194,71 @@ class ImportController extends Controller
         $info->setCellValue('A8', 'Nilai tingkat: lokal, nasional, internasional');
         $info->setCellValue('A9', 'Nilai visibility: public, internal');
         $info->setCellValue('A11', 'Catatan:');
-        $info->setCellValue('A12', '- Institusi/kategori/fakultas baru otomatis dibuat jika belum ada');
-        $info->setCellValue('A13', '- Nomor MoU duplikat akan di-skip');
-        $info->setCellValue('A14', '- Hapus baris contoh (2-4) sebelum mengisi data Anda');
+        $info->setCellValue('A12', '- Gunakan nama yang PERSIS SAMA dengan daftar di bawah agar tidak duplikat');
+        $info->setCellValue('A13', '- Jika nama institusi/kategori/fakultas tidak ada di daftar, akan otomatis dibuat baru');
+        $info->setCellValue('A14', '- Nomor MoU yang sudah ada di database akan di-skip (tidak diimport ulang)');
+        $info->setCellValue('A15', '- Hapus baris contoh (2-4) di sheet Template sebelum mengisi data Anda');
         $info->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $info->getStyle('A3')->getFont()->setBold(true);
+        $info->getStyle('A11')->getFont()->setBold(true);
         $info->getColumnDimension('A')->setWidth(80);
+
+        // === REFERENSI DATA DARI DATABASE ===
+
+        // Sheet: Daftar Kategori
+        $catSheet = $spreadsheet->createSheet();
+        $catSheet->setTitle('Daftar Kategori');
+        $catSheet->setCellValue('A1', 'Nama Kategori (gunakan persis untuk kolom "kategori")');
+        $catSheet->getStyle('A1')->getFont()->setBold(true);
+        $catSheet->getColumnDimension('A')->setWidth(60);
+        $categories = Category::where('is_active', true)->orderBy('sort_order')->pluck('name');
+        foreach ($categories as $i => $name) {
+            $catSheet->setCellValue('A' . ($i + 2), $name);
+        }
+        if ($categories->isEmpty()) {
+            $catSheet->setCellValue('A2', '(belum ada kategori)');
+            $catSheet->getStyle('A2')->getFont()->setItalic(true);
+        }
+
+        // Sheet: Daftar Fakultas
+        $facSheet = $spreadsheet->createSheet();
+        $facSheet->setTitle('Daftar Fakultas');
+        $facSheet->setCellValue('A1', 'Kode');
+        $facSheet->setCellValue('B1', 'Nama Fakultas (gunakan persis untuk kolom "fakultas")');
+        $facSheet->getStyle('A1:B1')->getFont()->setBold(true);
+        $facSheet->getColumnDimension('A')->setWidth(10);
+        $facSheet->getColumnDimension('B')->setWidth(50);
+        $faculties = Faculty::where('is_active', true)->orderBy('name')->get(['code', 'name']);
+        foreach ($faculties as $i => $fac) {
+            $facSheet->setCellValue('A' . ($i + 2), $fac->code ?? '-');
+            $facSheet->setCellValue('B' . ($i + 2), $fac->name);
+        }
+        if ($faculties->isEmpty()) {
+            $facSheet->setCellValue('A2', '-');
+            $facSheet->setCellValue('B2', '(belum ada fakultas)');
+            $facSheet->getStyle('B2')->getFont()->setItalic(true);
+        }
+
+        // Sheet: Daftar Institusi
+        $instSheet = $spreadsheet->createSheet();
+        $instSheet->setTitle('Daftar Institusi');
+        $instSheet->setCellValue('A1', 'Nama Institusi (gunakan persis untuk kolom "nama_lembaga")');
+        $instSheet->setCellValue('B1', 'Tipe');
+        $instSheet->setCellValue('C1', 'Kota');
+        $instSheet->getStyle('A1:C1')->getFont()->setBold(true);
+        $instSheet->getColumnDimension('A')->setWidth(50);
+        $instSheet->getColumnDimension('B')->setWidth(15);
+        $instSheet->getColumnDimension('C')->setWidth(20);
+        $institutions = Institution::where('is_active', true)->orderBy('name')->get(['name', 'type', 'city']);
+        foreach ($institutions as $i => $inst) {
+            $instSheet->setCellValue('A' . ($i + 2), $inst->name);
+            $instSheet->setCellValue('B' . ($i + 2), $inst->type);
+            $instSheet->setCellValue('C' . ($i + 2), $inst->city ?? '-');
+        }
+        if ($institutions->isEmpty()) {
+            $instSheet->setCellValue('A2', '(belum ada institusi)');
+            $instSheet->getStyle('A2')->getFont()->setItalic(true);
+        }
 
         $spreadsheet->setActiveSheetIndex(0);
 
