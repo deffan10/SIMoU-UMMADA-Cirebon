@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin - SIMoU</title>
     <link rel="icon" type="image/png" href="{{ $siteFavicon ?? asset('favicon.ico') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         input[type="email"], input[type="password"] {
             border: 1px solid #D1D5DB;
