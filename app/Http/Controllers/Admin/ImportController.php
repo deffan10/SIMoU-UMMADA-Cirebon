@@ -111,7 +111,7 @@ class ImportController extends Controller
                     'faculty_id' => $faculty?->id,
                     'level' => $this->mapLevel($row['tingkat'] ?? 'nasional'),
                     'type' => $this->mapType($row['jenis_kerjasama'] ?? 'akademik'),
-                    'cooperation_type' => 'mou',
+                    'cooperation_type' => $this->mapCooperationType($row['tipe_dokumen'] ?? 'mou'),
                     'start_date' => $startDate ?? now(),
                     'end_date' => $endDate ?? now()->addYears(2),
                     'visibility' => in_array(strtolower($row['visibility'] ?? ''), ['public', 'internal']) ? strtolower($row['visibility']) : 'internal',
@@ -148,7 +148,7 @@ class ImportController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Template Import MoU');
 
-        $headers = ['nomor_mou', 'judul', 'nama_lembaga', 'kategori', 'tanggal_mulai', 'tanggal_selesai', 'status', 'fakultas', 'jenis_kerjasama', 'tingkat', 'visibility', 'deskripsi'];
+        $headers = ['nomor_mou', 'judul', 'nama_lembaga', 'kategori', 'tanggal_mulai', 'tanggal_selesai', 'status', 'fakultas', 'jenis_kerjasama', 'tipe_dokumen', 'tingkat', 'visibility', 'deskripsi'];
         foreach ($headers as $i => $h) {
             $sheet->setCellValueByColumnAndRow($i + 1, 1, $h);
         }
@@ -159,7 +159,7 @@ class ImportController extends Controller
             'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
             'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
         ];
-        $sheet->getStyle('A1:L1')->applyFromArray($headerStyle);
+        $sheet->getStyle('A1:M1')->applyFromArray($headerStyle);
 
         // Set kolom tanggal (E & F) sebagai TEXT agar Excel tidak auto-format
         $sheet->getStyle('E:E')->getNumberFormat()->setFormatCode('@');
@@ -167,9 +167,9 @@ class ImportController extends Controller
 
         // Example rows
         $examples = [
-            ['MOU/UMMADA/001/2024', 'Kerjasama Tri Dharma', 'Universitas Indonesia', 'Pendidikan & Pengajaran', '2024-01-15', '2027-01-15', 'aktif', 'Fakultas Teknik', 'akademik', 'nasional', 'public', 'Kerjasama bidang pendidikan.'],
-            ['MOU/UMMADA/002/2024', 'Program Magang MBKM', 'PT Telkom Indonesia', 'Magang & MBKM', '2024-03-01', '2026-03-01', 'aktif', 'Fakultas Teknik', 'mbkm', 'nasional', 'public', 'Program magang bersertifikat.'],
-            ['MOU/UMMADA/003/2023', 'Pertukaran Mahasiswa', 'Universiti Malaya', 'Beasiswa & Pertukaran', '2023-08-01', '2026-08-01', 'aktif', '', 'internasional', 'internasional', 'public', 'Program pertukaran mahasiswa.'],
+            ['MOU/UMMADA/001/2024', 'Kerjasama Tri Dharma', 'Universitas Indonesia', 'Pendidikan & Pengajaran', '2024-01-15', '2027-01-15', 'aktif', 'Fakultas Teknik', 'akademik', 'mou', 'nasional', 'public', 'Kerjasama bidang pendidikan.'],
+            ['MOU/UMMADA/002/2024', 'Program Magang MBKM', 'PT Telkom Indonesia', 'Magang & MBKM', '2024-03-01', '2026-03-01', 'aktif', 'Fakultas Teknik', 'mbkm', 'moa', 'nasional', 'public', 'Program magang bersertifikat.'],
+            ['MOU/UMMADA/003/2023', 'Pertukaran Mahasiswa', 'Universiti Malaya', 'Beasiswa & Pertukaran', '2023-08-01', '2026-08-01', 'aktif', '', 'internasional', 'mou', 'internasional', 'public', 'Program pertukaran mahasiswa.'],
         ];
 
         foreach ($examples as $rowIdx => $row) {
@@ -183,7 +183,7 @@ class ImportController extends Controller
             }
         }
 
-        $sheet->getStyle('A2:L4')->applyFromArray([
+        $sheet->getStyle('A2:M4')->applyFromArray([
             'font' => ['italic' => true, 'color' => ['rgb' => '6B7280']],
             'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
         ]);
@@ -197,7 +197,7 @@ class ImportController extends Controller
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'FEF3C7']],
         ]);
 
-        foreach (range('A', 'L') as $col) {
+        foreach (range('A', 'M') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -212,23 +212,56 @@ class ImportController extends Controller
         $info = $spreadsheet->createSheet();
         $info->setTitle('Petunjuk');
         $info->setCellValue('A1', 'PETUNJUK IMPORT DATA MoU');
-        $info->setCellValue('A3', 'Kolom Wajib: nomor_mou, nama_lembaga');
-        $info->setCellValue('A4', 'Format Tanggal: YYYY-MM-DD (contoh: 2024-01-15)');
-        $info->setCellValue('A5', '  → Kolom tanggal sudah di-set sebagai TEXT. Ketik langsung: 2024-01-15');
-        $info->setCellValue('A6', '  → JANGAN format sebagai Date di Excel, biarkan sebagai Text.');
-        $info->setCellValue('A8', 'Nilai status: aktif, akan_expire, expire');
-        $info->setCellValue('A9', 'Nilai jenis_kerjasama: akademik, penelitian, mbkm, industri, pengabdian, pemerintah, internasional');
-        $info->setCellValue('A10', 'Nilai tingkat: lokal, nasional, internasional');
-        $info->setCellValue('A11', 'Nilai visibility: public, internal');
-        $info->setCellValue('A13', 'Catatan:');
-        $info->setCellValue('A14', '- Gunakan nama yang PERSIS SAMA dengan daftar di sheet Kategori/Fakultas/Institusi');
-        $info->setCellValue('A15', '- Jika nama tidak ada di daftar, akan otomatis dibuat baru');
-        $info->setCellValue('A16', '- Nomor MoU yang sudah ada di database akan di-skip (tidak diimport ulang)');
-        $info->setCellValue('A17', '- Hapus baris contoh (2-4) di sheet Template sebelum mengisi data Anda');
+        $info->setCellValue('A3', 'KOLOM WAJIB:');
+        $info->setCellValue('A4', '  - nomor_mou (unik, tidak boleh duplikat)');
+        $info->setCellValue('A5', '  - nama_lembaga');
+        $info->setCellValue('A7', 'FORMAT TANGGAL:');
+        $info->setCellValue('A8', '  - Format: YYYY-MM-DD (contoh: 2024-01-15)');
+        $info->setCellValue('A9', '  - Kolom tanggal sudah di-set sebagai TEXT. Ketik langsung.');
+        $info->setCellValue('A10', '  - JANGAN format sebagai Date di Excel, biarkan sebagai Text.');
+        $info->setCellValue('A12', 'NILAI YANG VALID:');
+        $info->setCellValue('A14', '  status:');
+        $info->setCellValue('A15', '    - aktif');
+        $info->setCellValue('A16', '    - akan_expire');
+        $info->setCellValue('A17', '    - expire');
+        $info->setCellValue('A19', '  jenis_kerjasama:');
+        $info->setCellValue('A20', '    - akademik');
+        $info->setCellValue('A21', '    - penelitian');
+        $info->setCellValue('A22', '    - mbkm');
+        $info->setCellValue('A23', '    - industri');
+        $info->setCellValue('A24', '    - pengabdian');
+        $info->setCellValue('A25', '    - pemerintah');
+        $info->setCellValue('A26', '    - internasional');
+        $info->setCellValue('A28', '  tipe_dokumen:');
+        $info->setCellValue('A29', '    - mou (Memorandum of Understanding)');
+        $info->setCellValue('A30', '    - moa (Memorandum of Agreement)');
+        $info->setCellValue('A31', '    - ia (Implementation Arrangement)');
+        $info->setCellValue('A32', '    - pks (Perjanjian Kerja Sama)');
+        $info->setCellValue('A33', '    - lainnya');
+        $info->setCellValue('A35', '  tingkat:');
+        $info->setCellValue('A36', '    - lokal');
+        $info->setCellValue('A37', '    - nasional');
+        $info->setCellValue('A38', '    - internasional');
+        $info->setCellValue('A40', '  visibility:');
+        $info->setCellValue('A41', '    - public (tampil di website)');
+        $info->setCellValue('A42', '    - internal (hanya admin)');
+        $info->setCellValue('A44', 'CATATAN:');
+        $info->setCellValue('A45', '  - Gunakan nama yang PERSIS SAMA dengan daftar di sheet Kategori/Fakultas/Institusi');
+        $info->setCellValue('A46', '  - Jika nama tidak ada di daftar, akan otomatis dibuat baru');
+        $info->setCellValue('A47', '  - Nomor MoU yang sudah ada di database akan di-skip (tidak diimport ulang)');
+        $info->setCellValue('A48', '  - Hapus baris contoh (2-4) di sheet Template sebelum mengisi data Anda');
+        $info->setCellValue('A49', '  - Jika kolom dikosongkan, akan menggunakan nilai default');
         $info->getStyle('A1')->getFont()->setBold(true)->setSize(14);
         $info->getStyle('A3')->getFont()->setBold(true);
-        $info->getStyle('A5:A6')->getFont()->setItalic(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('DC2626'));
-        $info->getStyle('A13')->getFont()->setBold(true);
+        $info->getStyle('A7')->getFont()->setBold(true);
+        $info->getStyle('A9:A10')->getFont()->setItalic(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('DC2626'));
+        $info->getStyle('A12')->getFont()->setBold(true);
+        $info->getStyle('A14')->getFont()->setBold(true);
+        $info->getStyle('A19')->getFont()->setBold(true);
+        $info->getStyle('A28')->getFont()->setBold(true);
+        $info->getStyle('A35')->getFont()->setBold(true);
+        $info->getStyle('A40')->getFont()->setBold(true);
+        $info->getStyle('A44')->getFont()->setBold(true);
         $info->getColumnDimension('A')->setWidth(85);
 
         // === REFERENSI DATA DARI DATABASE ===
@@ -367,5 +400,11 @@ class ImportController extends Controller
     {
         $status = strtolower(trim($status));
         return in_array($status, ['aktif', 'akan_expire', 'expire']) ? $status : 'aktif';
+    }
+
+    private function mapCooperationType(string $type): string
+    {
+        $type = strtolower(trim($type));
+        return in_array($type, ['mou', 'moa', 'ia', 'pks', 'lainnya']) ? $type : 'mou';
     }
 }
