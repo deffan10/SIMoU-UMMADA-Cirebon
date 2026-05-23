@@ -11,11 +11,21 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
+        // If admin is already logged in, redirect to dashboard
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return view('admin.auth.login');
     }
 
     public function login(Request $request)
     {
+        // If already logged in, redirect to dashboard
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
