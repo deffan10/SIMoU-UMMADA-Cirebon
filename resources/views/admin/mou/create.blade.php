@@ -77,7 +77,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fakultas</label>
                     <select name="faculty_id" class="w-full rounded-lg border-gray-300 text-sm">
-                        <option value="">Semua / Umum</option>
+                        <option value="">Universitas</option>
                         @foreach($faculties as $f)
                         <option value="{{ $f->id }}" {{ old('faculty_id') == $f->id ? 'selected' : '' }}>{{ $f->name }}</option>
                         @endforeach

@@ -18,8 +18,9 @@ class SettingsController extends Controller
         $admin = Auth::guard('admin')->user();
         $currentLogo = SiteSetting::get('site_logo');
         $currentFavicon = SiteSetting::get('site_favicon');
+        $currentHero = SiteSetting::get('hero_image');
 
-        return view('admin.settings.index', compact('admin', 'currentLogo', 'currentFavicon'));
+        return view('admin.settings.index', compact('admin', 'currentLogo', 'currentFavicon', 'currentHero'));
     }
 
     public function updateProfile(Request $request)
@@ -88,6 +89,41 @@ class SettingsController extends Controller
         ActivityLogService::log('update', null, 'Halaman Tentang diupdate');
 
         return back()->with('success', 'Halaman Tentang berhasil diupdate.');
+    }
+
+    public function updateHero(Request $request)
+    {
+        $request->validate([
+            'hero_image' => 'required|image|mimes:png,jpg,jpeg,webp|max:10240',
+        ]);
+
+        $file = $request->file('hero_image');
+
+        // Delete old hero
+        $oldHero = SiteSetting::get('hero_image');
+        if ($oldHero) {
+            Storage::disk('public')->delete($oldHero);
+        }
+
+        $heroPath = $file->store('site', 'public');
+        SiteSetting::set('hero_image', $heroPath);
+
+        ActivityLogService::log('update', null, 'Hero image diupdate');
+
+        return back()->with('success', 'Hero image berhasil diupdate.');
+    }
+
+    public function removeHero()
+    {
+        $oldHero = SiteSetting::get('hero_image');
+        if ($oldHero) {
+            Storage::disk('public')->delete($oldHero);
+        }
+        SiteSetting::set('hero_image', null);
+
+        ActivityLogService::log('update', null, 'Hero image dihapus');
+
+        return back()->with('success', 'Hero image berhasil dihapus.');
     }
 
     public function updateLogo(Request $request)

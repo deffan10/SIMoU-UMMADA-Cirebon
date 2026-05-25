@@ -3,8 +3,16 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+<section class="relative text-white overflow-hidden">
+    @if($siteHeroImage ?? null)
+    <div class="absolute inset-0">
+        <img src="{{ $siteHeroImage }}" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/70 to-indigo-900/80"></div>
+    </div>
+    @else
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800"></div>
+    @endif
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div class="text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">Repository Kerjasama</h1>
             <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Sistem Informasi MoU & Kerjasama<br>Universitas Muhammadiyah Ahmad Dahlan Cirebon</p>

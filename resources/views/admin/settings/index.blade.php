@@ -16,6 +16,48 @@
         </div>
     </div>
 
+    <!-- Hero Image -->
+    <div class="bg-white rounded-xl shadow-sm border p-6">
+        <h3 class="font-semibold text-gray-900 mb-4"><i class="fas fa-panorama text-orange-500 mr-2"></i>Hero Image (Landing Page)</h3>
+        <p class="text-sm text-gray-500 mb-4">Gambar latar belakang di hero section halaman utama. Ukuran rekomendasi: <strong>1920x600 px</strong> (landscape, minimal lebar 1200px).</p>
+
+        @if($currentHero)
+        <div class="mb-4">
+            <p class="text-xs text-gray-500 mb-2">Preview Hero Saat Ini:</p>
+            <div class="border rounded-lg overflow-hidden">
+                <img src="{{ asset('storage/' . $currentHero) }}" class="w-full h-40 object-cover" alt="Hero Image">
+            </div>
+        </div>
+        @endif
+
+        <form action="{{ route('admin.settings.hero') }}" method="POST" enctype="multipart/form-data" class="space-y-3">
+            @csrf
+            <div>
+                <input type="file" name="hero_image" accept="image/png,image/jpeg,image/webp" required
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
+                <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, WebP. Max 10MB. Rekomendasi: 1920x600 px.</p>
+            </div>
+            @error('hero_image')
+            <p class="text-red-500 text-xs">{{ $message }}</p>
+            @enderror
+            <div class="flex items-center space-x-3">
+                <button type="submit" class="px-5 py-2 bg-orange-600 text-white text-sm rounded-lg hover:bg-orange-700">
+                    <i class="fas fa-upload mr-1"></i> Upload Hero Image
+                </button>
+                @if($currentHero)
+                <button type="button" onclick="document.getElementById('remove-hero-form').submit()" class="px-4 py-2 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50">
+                    <i class="fas fa-trash mr-1"></i> Hapus
+                </button>
+                @endif
+            </div>
+        </form>
+        @if($currentHero)
+        <form id="remove-hero-form" action="{{ route('admin.settings.hero.remove') }}" method="POST" class="hidden">
+            @csrf @method('DELETE')
+        </form>
+        @endif
+    </div>
+
     <!-- Site Logo -->
     <div class="bg-white rounded-xl shadow-sm border p-6">
         <h3 class="font-semibold text-gray-900 mb-4"><i class="fas fa-image text-green-500 mr-2"></i>Logo Website</h3>
