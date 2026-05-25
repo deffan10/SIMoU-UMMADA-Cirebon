@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AttachmentController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FacultyController;
+use App\Http\Controllers\Admin\ImplementationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,6 +68,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Faculties
         Route::resource('faculties', FacultyController::class)->except(['show']);
+
+        // Implementations
+        Route::resource('implementations', ImplementationController::class)->except(['show']);
+        Route::get('/implementations/{implementation}/download', [ImplementationController::class, 'download'])->name('implementations.download');
+        Route::get('/api/mou/search', [ImplementationController::class, 'searchMou'])->name('implementations.search-mou');
 
         // Import
         Route::get('/import', [ImportController::class, 'index'])->name('import.index');

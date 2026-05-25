@@ -74,6 +74,49 @@
                 </div>
             </div>
             @endif
+
+            <!-- Implementasi -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-clipboard-check text-green-500 mr-2"></i> Implementasi
+                </h3>
+                @php
+                    $publicImplementations = $mou->publicImplementations;
+                    $totalImplementations = $mou->implementations()->count();
+                @endphp
+
+                @if($totalImplementations === 0)
+                <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+                    <i class="fas fa-info-circle text-gray-400 text-xl mb-2"></i>
+                    <p class="text-sm text-gray-500">Belum ada implementasi</p>
+                </div>
+                @elseif($publicImplementations->count() > 0)
+                <div class="space-y-3">
+                    @foreach($publicImplementations as $impl)
+                    <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-green-900">{{ $impl->title }}</p>
+                                @if($impl->description)
+                                <p class="text-xs text-green-700 mt-0.5">{{ $impl->description }}</p>
+                                @endif
+                            </div>
+                            @if($impl->file_path)
+                            <a href="{{ $impl->file_url }}" target="_blank" class="flex-shrink-0 px-3 py-1 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700">
+                                <i class="fas fa-file-pdf mr-1"></i> PDF
+                            </a>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+                    <i class="fas fa-lock text-yellow-500 text-xl mb-2"></i>
+                    <p class="text-sm text-yellow-700">File implementasi bersifat private</p>
+                </div>
+                @endif
+            </div>
         </div>
 
         <!-- Sidebar -->

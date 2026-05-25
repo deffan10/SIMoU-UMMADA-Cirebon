@@ -87,6 +87,16 @@ class Mou extends Model
         return $this->hasMany(Notification::class);
     }
 
+    public function implementations()
+    {
+        return $this->hasMany(Implementation::class);
+    }
+
+    public function publicImplementations()
+    {
+        return $this->hasMany(Implementation::class)->where('visibility', 'public');
+    }
+
     public function creator()
     {
         return $this->belongsTo(Admin::class, 'created_by');

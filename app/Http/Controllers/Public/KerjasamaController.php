@@ -48,7 +48,7 @@ class KerjasamaController extends Controller
     {
         $mou = Mou::public()
             ->where('slug', $slug)
-            ->with(['institution', 'category', 'faculty', 'renewals'])
+            ->with(['institution', 'category', 'faculty', 'renewals', 'implementations'])
             ->firstOrFail();
 
         $relatedMous = Mou::public()

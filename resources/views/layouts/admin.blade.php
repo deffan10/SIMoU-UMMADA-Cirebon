@@ -55,6 +55,10 @@
                         <i class="fas fa-file-import w-5 text-center"></i>
                         <span x-show="sidebarOpen" class="ml-3">Import Data</span>
                     </a>
+                    <a href="{{ route('admin.implementations.index') }}" class="flex items-center px-3 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.implementations.*') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+                        <i class="fas fa-clipboard-check w-5 text-center"></i>
+                        <span x-show="sidebarOpen" class="ml-3">Implementasi</span>
+                    </a>
 
                     <div class="pt-4 mt-4 border-t border-gray-700">
                         <a href="{{ route('admin.notifications') }}" class="flex items-center px-3 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.notifications') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
