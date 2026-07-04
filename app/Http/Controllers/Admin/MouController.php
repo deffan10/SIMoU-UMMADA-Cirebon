@@ -24,6 +24,9 @@ class MouController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+        if ($request->filled('cooperation_type')) {
+            $query->where('cooperation_type', $request->cooperation_type);
+        }
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }

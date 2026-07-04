@@ -24,7 +24,15 @@
                 </button>
             </div>
 
-            <div x-show="showFilter" x-cloak class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4 pt-4 border-t">
+            <div x-show="showFilter" x-cloak class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-4 pt-4 border-t">
+                <select name="cooperation_type" class="rounded-lg border-gray-300 text-sm">
+                    <option value="">Semua Tipe Dokumen</option>
+                    <option value="mou" {{ request('cooperation_type') == 'mou' ? 'selected' : '' }}>MoU</option>
+                    <option value="moa" {{ request('cooperation_type') == 'moa' ? 'selected' : '' }}>MoA</option>
+                    <option value="ia" {{ request('cooperation_type') == 'ia' ? 'selected' : '' }}>IA</option>
+                    <option value="pks" {{ request('cooperation_type') == 'pks' ? 'selected' : '' }}>PKS</option>
+                    <option value="lainnya" {{ request('cooperation_type') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
+                </select>
                 <select name="category" class="rounded-lg border-gray-300 text-sm">
                     <option value="">Semua Kategori</option>
                     @foreach($categories as $cat)

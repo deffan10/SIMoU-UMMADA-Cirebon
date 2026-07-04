@@ -9,7 +9,7 @@
     </div>
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-white rounded-xl shadow-sm border p-6 text-center">
             <div class="text-4xl font-bold text-blue-600">{{ $totalMous }}</div>
             <div class="text-gray-600 mt-1">Total Kerjasama</div>
@@ -21,6 +21,25 @@
         <div class="bg-white rounded-xl shadow-sm border p-6 text-center">
             <div class="text-4xl font-bold text-purple-600">{{ $totalInstitutions }}</div>
             <div class="text-gray-600 mt-1">Institusi Partner</div>
+        </div>
+    </div>
+
+    <!-- Document Type Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="bg-white rounded-xl shadow-sm border p-6 text-center">
+            <div class="text-4xl font-bold text-blue-600">{{ $totalMoU }}</div>
+            <div class="text-gray-600 mt-1 font-semibold">MoU</div>
+            <div class="text-gray-400 text-xs mt-0.5">Memorandum of Understanding</div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border p-6 text-center">
+            <div class="text-4xl font-bold text-indigo-600">{{ $totalMoA }}</div>
+            <div class="text-gray-600 mt-1 font-semibold">MoA</div>
+            <div class="text-gray-400 text-xs mt-0.5">Memorandum of Agreement</div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border p-6 text-center">
+            <div class="text-4xl font-bold text-purple-600">{{ $totalIA }}</div>
+            <div class="text-gray-600 mt-1 font-semibold">IA</div>
+            <div class="text-gray-400 text-xs mt-0.5">Implementation Agreement</div>
         </div>
     </div>
 

@@ -15,6 +15,10 @@ class StatistikController extends Controller
         $totalActive = Mou::public()->active()->count();
         $totalInstitutions = Institution::whereHas('mous', fn($q) => $q->public())->count();
 
+        $totalMoU = Mou::public()->where('cooperation_type', 'mou')->count();
+        $totalMoA = Mou::public()->where('cooperation_type', 'moa')->count();
+        $totalIA = Mou::public()->where('cooperation_type', 'ia')->count();
+
         $byCategory = Category::withCount(['mous' => fn($q) => $q->public()])
             ->having('mous_count', '>', 0)
             ->orderByDesc('mous_count')
@@ -47,6 +51,9 @@ class StatistikController extends Controller
             'totalMous',
             'totalActive',
             'totalInstitutions',
+            'totalMoU',
+            'totalMoA',
+            'totalIA',
             'byCategory',
             'byLevel',
             'byType',

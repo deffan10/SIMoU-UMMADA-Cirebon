@@ -34,6 +34,9 @@ class KerjasamaController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+        if ($request->filled('cooperation_type')) {
+            $query->where('cooperation_type', $request->cooperation_type);
+        }
 
         $mous = $query->latest()->paginate(12)->withQueryString();
         $categories = Category::where('is_active', true)->orderBy('sort_order')->get();
