@@ -14,11 +14,16 @@
             <tr class="hover:bg-gray-50">
                 <td class="px-4 py-3 font-medium">{{ $f->name }}</td>
                 <td class="px-4 py-3 text-center text-gray-500">{{ $f->code ?? '-' }}</td>
-                <td class="px-4 py-3 text-center">{{ $f->study_programs_count }}</td>
+                <td class="px-4 py-3 text-center">
+                    <a href="{{ route('admin.faculties.study-programs.index', $f) }}" class="text-blue-600 hover:underline font-semibold">
+                        {{ $f->study_programs_count }}
+                    </a>
+                </td>
                 <td class="px-4 py-3 text-center font-semibold">{{ $f->mous_count }}</td>
                 <td class="px-4 py-3 text-center">
-                    <a href="{{ route('admin.faculties.edit', $f) }}" class="text-yellow-600 mr-2"><i class="fas fa-edit"></i></a>
-                    <form action="{{ route('admin.faculties.destroy', $f) }}" method="POST" class="inline" onsubmit="return confirm('Hapus?')">@csrf @method('DELETE')<button class="text-red-600"><i class="fas fa-trash"></i></button></form>
+                    <a href="{{ route('admin.faculties.study-programs.index', $f) }}" class="text-blue-600 mr-2" title="Kelola Prodi"><i class="fas fa-list"></i></a>
+                    <a href="{{ route('admin.faculties.edit', $f) }}" class="text-yellow-600 mr-2" title="Edit"><i class="fas fa-edit"></i></a>
+                    <form action="{{ route('admin.faculties.destroy', $f) }}" method="POST" class="inline" onsubmit="return confirm('Hapus?')">@csrf @method('DELETE')<button class="text-red-600" title="Hapus"><i class="fas fa-trash"></i></button></form>
                 </td>
             </tr>
             @endforeach

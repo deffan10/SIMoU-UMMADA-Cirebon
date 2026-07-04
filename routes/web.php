@@ -69,6 +69,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Faculties
         Route::resource('faculties', FacultyController::class)->except(['show']);
 
+        // Study Programs under Faculty
+        Route::get('/faculties/{faculty}/study-programs', [\App\Http\Controllers\Admin\StudyProgramController::class, 'index'])->name('faculties.study-programs.index');
+        Route::post('/faculties/{faculty}/study-programs', [\App\Http\Controllers\Admin\StudyProgramController::class, 'store'])->name('faculties.study-programs.store');
+        Route::get('/study-programs/{studyProgram}/edit', [\App\Http\Controllers\Admin\StudyProgramController::class, 'edit'])->name('study-programs.edit');
+        Route::put('/study-programs/{studyProgram}', [\App\Http\Controllers\Admin\StudyProgramController::class, 'update'])->name('study-programs.update');
+        Route::delete('/study-programs/{studyProgram}', [\App\Http\Controllers\Admin\StudyProgramController::class, 'destroy'])->name('study-programs.destroy');
+
         // Implementations
         Route::resource('implementations', ImplementationController::class)->except(['show']);
         Route::get('/implementations/{implementation}/download', [ImplementationController::class, 'download'])->name('implementations.download');

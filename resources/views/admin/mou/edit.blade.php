@@ -72,7 +72,9 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Program Studi</label>
-                    <input type="text" name="study_program" value="{{ old('study_program', $mou->study_program) }}" class="w-full rounded-lg border-gray-300 text-sm">
+                    <select name="study_program" class="w-full rounded-lg border-gray-300 text-sm" id="study_program_select" disabled>
+                        <option value="">Pilih Program Studi</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -144,3 +146,57 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const facultiesData = @json($faculties);
+    const facultySelect = document.querySelector('select[name="faculty_id"]');
+    const studyProgramSelect = document.getElementById('study_program_select');
+    const oldValue = "{{ old('study_program', $mou->study_program) }}";
+
+    function updateStudyPrograms() {
+        const selectedFacultyId = facultySelect.value;
+        studyProgramSelect.innerHTML = '<option value="">Pilih Program Studi</option>';
+        
+        if (!selectedFacultyId) {
+            studyProgramSelect.disabled = true;
+            return;
+        }
+
+        const faculty = facultiesData.find(f => f.id == selectedFacultyId);
+        if (faculty && faculty.study_programs && faculty.study_programs.length > 0) {
+            studyProgramSelect.disabled = false;
+            
+            // Filter active study programs, but keep the currently saved program even if it is inactive
+            const activePrograms = faculty.study_programs.filter(p => p.is_active || p.name === oldValue);
+            
+            if (activePrograms.length > 0) {
+                activePrograms.forEach(program => {
+                    const option = document.createElement('option');
+                    option.value = program.name;
+                    option.textContent = `${program.level} - ${program.name}`;
+                    if (program.name === oldValue) {
+                        option.selected = true;
+                    }
+                    studyProgramSelect.appendChild(option);
+                });
+            } else {
+                studyProgramSelect.disabled = true;
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "Tidak ada program studi aktif";
+                studyProgramSelect.appendChild(option);
+            }
+        } else {
+            studyProgramSelect.disabled = true;
+        }
+    }
+
+    if (facultySelect) {
+        facultySelect.addEventListener('change', updateStudyPrograms);
+        updateStudyPrograms(); // Trigger initial load
+    }
+});
+</script>
+@endpush
