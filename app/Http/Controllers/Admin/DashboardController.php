@@ -19,6 +19,9 @@ class DashboardController extends Controller
             'total_expire' => Mou::where('status', 'expire')->count(),
             'total_akan_expire' => Mou::where('status', 'akan_expire')->count(),
             'total_institutions' => Institution::count(),
+            'total_mou' => Mou::where('cooperation_type', 'mou')->count(),
+            'total_moa' => Mou::where('cooperation_type', 'moa')->count(),
+            'total_ia' => Mou::where('cooperation_type', 'ia')->count(),
         ];
 
         $reminders = [

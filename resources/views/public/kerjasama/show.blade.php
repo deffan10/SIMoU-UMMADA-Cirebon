@@ -41,7 +41,7 @@
             @if($mou->show_pdf_public && $mou->main_document)
             <div class="bg-white rounded-xl shadow-sm border p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                    <i class="fas fa-file-pdf text-red-500 mr-2"></i> Dokumen MoU
+                    <i class="fas fa-file-pdf text-red-500 mr-2"></i> Dokumen {{ $mou->getCooperationTypeLabel() }}
                 </h3>
                 <div class="border rounded-lg overflow-hidden" style="height: 600px;">
                     <iframe src="{{ $mou->main_document_url }}" class="w-full h-full" frameborder="0"></iframe>
@@ -127,6 +127,10 @@
                     <div class="flex justify-between">
                         <dt class="text-gray-500">Nomor MoU</dt>
                         <dd class="font-medium text-gray-900">{{ $mou->mou_number }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Tipe Dokumen</dt>
+                        <dd class="font-medium text-gray-900">{{ $mou->getCooperationTypeLabel() }}</dd>
                     </div>
                     <div class="flex justify-between">
                         <dt class="text-gray-500">Jenis</dt>

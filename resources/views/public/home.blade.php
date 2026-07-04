@@ -45,6 +45,25 @@
                 <div class="text-blue-200 text-sm mt-1">Internasional</div>
             </div>
         </div>
+
+        <!-- Stats Tipe Dokumen -->
+        <div class="grid grid-cols-3 gap-4 mt-6 max-w-3xl mx-auto">
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                <div class="text-2xl font-bold">{{ $stats['total_mou'] }}</div>
+                <div class="text-blue-200 text-xs mt-1 font-semibold">MoU</div>
+                <div class="text-blue-300 text-[10px] mt-0.5 leading-tight hidden sm:block">Memorandum of Understanding</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                <div class="text-2xl font-bold">{{ $stats['total_moa'] }}</div>
+                <div class="text-blue-200 text-xs mt-1 font-semibold">MoA</div>
+                <div class="text-blue-300 text-[10px] mt-0.5 leading-tight hidden sm:block">Memorandum of Agreement</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                <div class="text-2xl font-bold">{{ $stats['total_ia'] }}</div>
+                <div class="text-blue-200 text-xs mt-1 font-semibold">IA</div>
+                <div class="text-blue-300 text-[10px] mt-0.5 leading-tight hidden sm:block">Implementation Agreement</div>
+            </div>
+        </div>
     </div>
 </section>
 

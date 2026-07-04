@@ -50,6 +50,43 @@
     </div>
 </div>
 
+<!-- Stats Tipe Dokumen -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white rounded-xl shadow-sm border p-5">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-500">Total MoU</p>
+                <p class="text-2xl font-bold text-blue-600">{{ $stats['total_mou'] }}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-file-contract text-blue-600"></i>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border p-5">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-500">Total MoA</p>
+                <p class="text-2xl font-bold text-indigo-600">{{ $stats['total_moa'] }}</p>
+            </div>
+            <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-file-signature text-indigo-600"></i>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border p-5">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-500">Total IA</p>
+                <p class="text-2xl font-bold text-purple-600">{{ $stats['total_ia'] }}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-file-invoice text-purple-600"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Reminders -->
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
     <div class="bg-orange-50 border border-orange-200 rounded-xl p-4 flex items-center space-x-3">

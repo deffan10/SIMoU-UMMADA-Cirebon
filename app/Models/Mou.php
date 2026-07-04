@@ -190,6 +190,19 @@ class Mou extends Model
         };
     }
 
+    public function getCooperationTypeLabel(): string
+    {
+        return match ($this->cooperation_type) {
+            'mou' => 'MoU',
+            'moa' => 'MoA',
+            'ia' => 'IA',
+            'pks' => 'PKS',
+            'lainnya' => 'Lainnya',
+            default => strtoupper($this->cooperation_type),
+        };
+    }
+
+
     // Methods
     public function updateStatus(): void
     {
