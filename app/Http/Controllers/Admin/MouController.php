@@ -27,6 +27,13 @@ class MouController extends Controller
         if ($request->filled('cooperation_type')) {
             $query->where('cooperation_type', $request->cooperation_type);
         }
+        if ($request->filled('has_implementation')) {
+            if ($request->has_implementation == 'yes') {
+                $query->has('implementations');
+            } elseif ($request->has_implementation == 'no') {
+                $query->doesntHave('implementations');
+            }
+        }
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
@@ -72,7 +79,7 @@ class MouController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'level' => 'required|in:lokal,nasional,internasional',
             'type' => 'required|in:akademik,penelitian,mbkm,industri,pengabdian,pemerintah,internasional',
-            'cooperation_type' => 'required|in:mou,moa,ia,pks,lainnya',
+            'cooperation_type' => 'required|in:mou,moa,lainnya',
             'faculty_id' => 'nullable|exists:faculties,id',
             'study_program' => 'nullable|string|max:255',
             'pic_name' => 'nullable|string|max:255',
@@ -143,7 +150,7 @@ class MouController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'level' => 'required|in:lokal,nasional,internasional',
             'type' => 'required|in:akademik,penelitian,mbkm,industri,pengabdian,pemerintah,internasional',
-            'cooperation_type' => 'required|in:mou,moa,ia,pks,lainnya',
+            'cooperation_type' => 'required|in:mou,moa,lainnya',
             'faculty_id' => 'nullable|exists:faculties,id',
             'study_program' => 'nullable|string|max:255',
             'pic_name' => 'nullable|string|max:255',

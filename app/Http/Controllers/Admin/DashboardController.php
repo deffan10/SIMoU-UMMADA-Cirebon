@@ -21,7 +21,7 @@ class DashboardController extends Controller
             'total_institutions' => Institution::count(),
             'total_mou' => Mou::where('cooperation_type', 'mou')->count(),
             'total_moa' => Mou::where('cooperation_type', 'moa')->count(),
-            'total_ia' => Mou::where('cooperation_type', 'ia')->count(),
+            'total_ia' => \App\Models\Implementation::count(),
         ];
 
         $reminders = [

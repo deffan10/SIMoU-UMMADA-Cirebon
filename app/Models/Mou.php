@@ -195,8 +195,6 @@ class Mou extends Model
         return match ($this->cooperation_type) {
             'mou' => 'MoU',
             'moa' => 'MoA',
-            'ia' => 'IA',
-            'pks' => 'PKS',
             'lainnya' => 'Lainnya',
             default => strtoupper($this->cooperation_type),
         };

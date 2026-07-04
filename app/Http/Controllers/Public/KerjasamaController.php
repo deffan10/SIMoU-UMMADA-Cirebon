@@ -37,6 +37,13 @@ class KerjasamaController extends Controller
         if ($request->filled('cooperation_type')) {
             $query->where('cooperation_type', $request->cooperation_type);
         }
+        if ($request->filled('has_implementation')) {
+            if ($request->has_implementation == 'yes') {
+                $query->has('publicImplementations');
+            } elseif ($request->has_implementation == 'no') {
+                $query->doesntHave('publicImplementations');
+            }
+        }
 
         $mous = $query->latest()->paginate(12)->withQueryString();
         $categories = Category::where('is_active', true)->orderBy('sort_order')->get();

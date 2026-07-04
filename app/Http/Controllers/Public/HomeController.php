@@ -20,7 +20,7 @@ class HomeController extends Controller
             'total_internasional' => Mou::public()->where('level', 'internasional')->count(),
             'total_mou' => Mou::public()->where('cooperation_type', 'mou')->count(),
             'total_moa' => Mou::public()->where('cooperation_type', 'moa')->count(),
-            'total_ia' => Mou::public()->where('cooperation_type', 'ia')->count(),
+            'total_ia' => \App\Models\Implementation::public()->count(),
         ];
 
         $categoryStats = Category::withCount(['mous' => function ($q) {

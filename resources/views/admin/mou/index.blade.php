@@ -30,9 +30,12 @@
             <option value="">Tipe Dokumen</option>
             <option value="mou" {{ request('cooperation_type')=='mou'?'selected':'' }}>MoU</option>
             <option value="moa" {{ request('cooperation_type')=='moa'?'selected':'' }}>MoA</option>
-            <option value="ia" {{ request('cooperation_type')=='ia'?'selected':'' }}>IA</option>
-            <option value="pks" {{ request('cooperation_type')=='pks'?'selected':'' }}>PKS</option>
             <option value="lainnya" {{ request('cooperation_type')=='lainnya'?'selected':'' }}>Lainnya</option>
+        </select>
+        <select name="has_implementation" class="rounded-lg border-gray-300 text-sm">
+            <option value="">Status Implementasi</option>
+            <option value="yes" {{ request('has_implementation')=='yes'?'selected':'' }}>Memiliki Implementasi</option>
+            <option value="no" {{ request('has_implementation')=='no'?'selected':'' }}>Belum Ada Implementasi</option>
         </select>
         <select name="category_id" class="rounded-lg border-gray-300 text-sm">
             <option value="">Kategori</option>
@@ -46,7 +49,7 @@
             <option value="internal" {{ request('visibility')=='internal'?'selected':'' }}>Internal</option>
         </select>
         <button class="px-4 py-2 bg-gray-800 text-white text-sm rounded-lg">Filter</button>
-        @if(request()->hasAny(['search','status','cooperation_type','category_id','visibility']))
+        @if(request()->hasAny(['search','status','cooperation_type','has_implementation','category_id','visibility']))
         <a href="{{ route('admin.mou.index') }}" class="px-3 py-2 text-sm text-gray-600 hover:text-red-600">Reset</a>
         @endif
     </form>

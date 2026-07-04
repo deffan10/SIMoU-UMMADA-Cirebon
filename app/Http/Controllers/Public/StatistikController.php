@@ -17,7 +17,7 @@ class StatistikController extends Controller
 
         $totalMoU = Mou::public()->where('cooperation_type', 'mou')->count();
         $totalMoA = Mou::public()->where('cooperation_type', 'moa')->count();
-        $totalIA = Mou::public()->where('cooperation_type', 'ia')->count();
+        $totalIA = \App\Models\Implementation::public()->count();
 
         $byCategory = Category::withCount(['mous' => fn($q) => $q->public()])
             ->having('mous_count', '>', 0)

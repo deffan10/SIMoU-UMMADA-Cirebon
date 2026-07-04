@@ -56,7 +56,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipe Dokumen</label>
                     <select name="cooperation_type" required class="w-full rounded-lg border-gray-300 text-sm">
-                        @foreach(['mou'=>'MoU','moa'=>'MoA','ia'=>'IA','pks'=>'PKS','lainnya'=>'Lainnya'] as $k=>$v)
+                        @foreach(['mou'=>'MoU','moa'=>'MoA','lainnya'=>'Lainnya'] as $k=>$v)
                         <option value="{{ $k }}" {{ $mou->cooperation_type==$k?'selected':'' }}>{{ $v }}</option>
                         @endforeach
                     </select>

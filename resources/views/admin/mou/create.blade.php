@@ -69,8 +69,6 @@
                     <select name="cooperation_type" required class="w-full rounded-lg border-gray-300 text-sm">
                         <option value="mou" {{ old('cooperation_type')=='mou'?'selected':'' }}>MoU</option>
                         <option value="moa" {{ old('cooperation_type')=='moa'?'selected':'' }}>MoA</option>
-                        <option value="ia" {{ old('cooperation_type')=='ia'?'selected':'' }}>IA</option>
-                        <option value="pks" {{ old('cooperation_type')=='pks'?'selected':'' }}>PKS</option>
                         <option value="lainnya" {{ old('cooperation_type')=='lainnya'?'selected':'' }}>Lainnya</option>
                     </select>
                 </div>
