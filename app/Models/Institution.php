@@ -33,7 +33,13 @@ class Institution extends Model
     {
         static::creating(function ($institution) {
             if (empty($institution->slug)) {
-                $institution->slug = Str::slug($institution->name);
+                $baseSlug = Str::slug($institution->name);
+                $slug = $baseSlug;
+                $counter = 1;
+                while (static::withTrashed()->where('slug', $slug)->exists()) {
+                    $slug = $baseSlug . '-' . $counter++;
+                }
+                $institution->slug = $slug;
             }
         });
     }

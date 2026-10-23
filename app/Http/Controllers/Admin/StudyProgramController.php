@@ -22,7 +22,7 @@ class StudyProgramController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:10',
-            'level' => 'required|in:D3,D4,S1,S2,S3',
+            'level' => 'required|in:D3,D4,S1,S2,S3,Profesi',
         ]);
 
         $validated['faculty_id'] = $faculty->id;
@@ -52,7 +52,7 @@ class StudyProgramController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:10',
-            'level' => 'required|in:D3,D4,S1,S2,S3',
+            'level' => 'required|in:D3,D4,S1,S2,S3,Profesi',
             'is_active' => 'boolean',
         ]);
 

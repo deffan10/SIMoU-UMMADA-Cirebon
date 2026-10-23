@@ -47,7 +47,27 @@ class InstitutionController extends Controller
             'logo' => 'nullable|image|max:2048',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $trashed = Institution::onlyTrashed()->where('name', $validated['name'])->first();
+        if ($trashed) {
+            if ($request->hasFile('logo')) {
+                if ($trashed->logo) {
+                    Storage::disk('public')->delete($trashed->logo);
+                }
+                $validated['logo'] = $request->file('logo')->store('institutions', 'public');
+            }
+            $trashed->restore();
+            $trashed->update($validated);
+            ActivityLogService::log('create', $trashed, "Institusi '{$trashed->name}' ditambahkan kembali");
+            return redirect()->route('admin.institutions.index')->with('success', 'Institusi berhasil ditambahkan.');
+        }
+
+        $baseSlug = Str::slug($validated['name']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Institution::withTrashed()->where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+        $validated['slug'] = $slug;
 
         if ($request->hasFile('logo')) {
             $validated['logo'] = $request->file('logo')->store('institutions', 'public');
@@ -89,6 +109,16 @@ class InstitutionController extends Controller
             'description' => 'nullable|string',
             'logo' => 'nullable|image|max:2048',
         ]);
+
+        if ($institution->name !== $validated['name']) {
+            $baseSlug = Str::slug($validated['name']);
+            $slug = $baseSlug;
+            $counter = 1;
+            while (Institution::withTrashed()->where('slug', $slug)->where('id', '!=', $institution->id)->exists()) {
+                $slug = $baseSlug . '-' . $counter++;
+            }
+            $validated['slug'] = $slug;
+        }
 
         if ($request->hasFile('logo')) {
             if ($institution->logo) {

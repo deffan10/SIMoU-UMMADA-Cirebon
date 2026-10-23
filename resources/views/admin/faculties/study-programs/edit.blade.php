@@ -36,6 +36,7 @@
                     <option value="S1" {{ old('level', $studyProgram->level)=='S1'?'selected':'' }}>S1 - Sarjana</option>
                     <option value="D3" {{ old('level', $studyProgram->level)=='D3'?'selected':'' }}>D3 - Diploma 3</option>
                     <option value="D4" {{ old('level', $studyProgram->level)=='D4'?'selected':'' }}>D4 - Diploma 4</option>
+                    <option value="Profesi" {{ old('level', $studyProgram->level)=='Profesi'?'selected':'' }}>Profesi</option>
                     <option value="S2" {{ old('level', $studyProgram->level)=='S2'?'selected':'' }}>S2 - Magister</option>
                     <option value="S3" {{ old('level', $studyProgram->level)=='S3'?'selected':'' }}>S3 - Doktor</option>
                 </select>
