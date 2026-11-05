@@ -46,6 +46,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // MoU CRUD
+        Route::get('/mou/export', [MouController::class, 'export'])->name('mou.export');
         Route::resource('mou', MouController::class);
         Route::post('/mou/{mou}/restore', [MouController::class, 'restore'])->name('mou.restore');
         Route::get('/mou-trashed', [MouController::class, 'trashed'])->name('mou.trashed');

@@ -6,12 +6,46 @@
     <div>
         <p class="text-sm text-gray-500">Kelola seluruh data MoU/Kerjasama</p>
     </div>
-    <div class="flex space-x-2 mt-2 sm:mt-0">
-        <a href="{{ route('admin.mou.trashed') }}" class="px-3 py-2 text-sm border rounded-lg hover:bg-gray-50">
-            <i class="fas fa-trash-alt mr-1"></i> Trash
+    <div class="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
+        <a href="{{ route('admin.mou.trashed') }}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors duration-150">
+            <i class="fas fa-trash-alt mr-1.5 text-gray-400"></i> Trash
         </a>
-        <a href="{{ route('admin.mou.create') }}" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">
-            <i class="fas fa-plus mr-1"></i> Tambah MoU
+
+        <!-- Export Dropdown -->
+        <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+            <button type="button" 
+                    @click="open = !open" 
+                    :aria-expanded="open"
+                    class="inline-flex items-center px-3.5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors duration-150">
+                <i class="fas fa-file-export mr-1.5 text-gray-500"></i>
+                <span>Export</span>
+                <i class="fas fa-chevron-down ml-2 text-xs text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+            </button>
+
+            <div x-show="open" 
+                 x-cloak 
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="transform opacity-0 scale-95"
+                 x-transition:enter-end="transform opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="transform opacity-100 scale-100"
+                 x-transition:leave-end="transform opacity-0 scale-95"
+                 class="absolute right-0 mt-1.5 w-44 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-30">
+                <a href="{{ route('admin.mou.export', array_merge(request()->except('page'), ['format' => 'xlsx'])) }}" 
+                   class="flex items-center px-3.5 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
+                    <i class="fas fa-file-excel mr-2.5 text-emerald-600 w-4 text-center"></i>
+                    <span>Export Excel (.xlsx)</span>
+                </a>
+                <a href="{{ route('admin.mou.export', array_merge(request()->except('page'), ['format' => 'csv'])) }}" 
+                   class="flex items-center px-3.5 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
+                    <i class="fas fa-file-csv mr-2.5 text-blue-600 w-4 text-center"></i>
+                    <span>Export CSV (.csv)</span>
+                </a>
+            </div>
+        </div>
+
+        <a href="{{ route('admin.mou.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors duration-150">
+            <i class="fas fa-plus mr-1.5"></i> Tambah MoU
         </a>
     </div>
 </div>
