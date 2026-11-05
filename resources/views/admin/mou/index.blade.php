@@ -7,8 +7,11 @@
         <p class="text-sm text-gray-500">Kelola seluruh data MoU/Kerjasama</p>
     </div>
     <div class="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
-        <a href="{{ route('admin.mou.trashed') }}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors duration-150">
-            <i class="fas fa-trash-alt mr-1.5 text-gray-400"></i> Trash
+        <a href="{{ route('admin.mou.trashed') }}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 transition-colors">
+            <svg class="w-4 h-4 mr-1.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Trash</span>
         </a>
 
         <!-- Export Dropdown -->
@@ -16,36 +19,47 @@
             <button type="button" 
                     @click="open = !open" 
                     :aria-expanded="open"
-                    class="inline-flex items-center px-3.5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors duration-150">
-                <i class="fas fa-file-export mr-1.5 text-gray-500"></i>
+                    class="inline-flex items-center px-3.5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 transition-colors">
+                <svg class="w-4 h-4 mr-1.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
                 <span>Export</span>
-                <i class="fas fa-chevron-down ml-2 text-xs text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                <svg class="w-3.5 h-3.5 ml-2 text-gray-400 shrink-0 transition-transform duration-150" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
             </button>
 
             <div x-show="open" 
                  x-cloak 
                  x-transition:enter="transition ease-out duration-100"
-                 x-transition:enter-start="transform opacity-0 scale-95"
-                 x-transition:enter-end="transform opacity-100 scale-100"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
                  x-transition:leave="transition ease-in duration-75"
-                 x-transition:leave-start="transform opacity-100 scale-100"
-                 x-transition:leave-end="transform opacity-0 scale-95"
-                 class="absolute right-0 mt-1.5 w-44 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-30">
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="absolute right-0 mt-1.5 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
                 <a href="{{ route('admin.mou.export', array_merge(request()->except('page'), ['format' => 'xlsx'])) }}" 
-                   class="flex items-center px-3.5 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
-                    <i class="fas fa-file-excel mr-2.5 text-emerald-600 w-4 text-center"></i>
-                    <span>Export Excel (.xlsx)</span>
+                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+                    <svg class="w-4 h-4 mr-2.5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="whitespace-nowrap font-medium">Excel (.xlsx)</span>
                 </a>
                 <a href="{{ route('admin.mou.export', array_merge(request()->except('page'), ['format' => 'csv'])) }}" 
-                   class="flex items-center px-3.5 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
-                    <i class="fas fa-file-csv mr-2.5 text-blue-600 w-4 text-center"></i>
-                    <span>Export CSV (.csv)</span>
+                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors border-t border-gray-100">
+                    <svg class="w-4 h-4 mr-2.5 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <span class="whitespace-nowrap font-medium">CSV (.csv)</span>
                 </a>
             </div>
         </div>
 
-        <a href="{{ route('admin.mou.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors duration-150">
-            <i class="fas fa-plus mr-1.5"></i> Tambah MoU
+        <a href="{{ route('admin.mou.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 transition-colors">
+            <svg class="w-4 h-4 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Tambah MoU</span>
         </a>
     </div>
 </div>
