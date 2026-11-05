@@ -79,6 +79,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/study-programs/{studyProgram}', [StudyProgramController::class, 'destroy'])->name('study-programs.destroy');
 
         // Implementations
+        Route::get('/implementations/export', [ImplementationController::class, 'export'])->name('implementations.export');
         Route::resource('implementations', ImplementationController::class)->except(['show']);
         Route::get('/implementations/{implementation}/download', [ImplementationController::class, 'download'])->name('implementations.download');
         Route::get('/api/mou/search', [ImplementationController::class, 'searchMou'])->name('implementations.search-mou');
