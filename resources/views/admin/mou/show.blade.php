@@ -100,8 +100,16 @@
                         </div>
                         <div class="bg-purple-50 rounded-lg p-3">
                             <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-purple-900">Version {{ $renewal->renewal_number + 1 }}</span>
-                                <span class="text-xs text-gray-500">{{ $renewal->created_at->format('d M Y') }}</span>
+                                <span class="text-sm font-medium text-purple-900">Perpanjangan ke-{{ $renewal->renewal_number }}</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-500">{{ $renewal->created_at->format('d M Y') }}</span>
+                                    <form action="{{ route('admin.renewal.destroy', [$mou, $renewal]) }}" method="POST" onsubmit="return confirm('Hapus histori perpanjangan ke-{{ $renewal->renewal_number }} ini? Periode MoU akan disesuaikan otomatis.')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="text-red-500 hover:text-red-700 text-xs p-1 rounded hover:bg-red-50" title="Hapus perpanjangan ini">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                             <p class="text-xs text-gray-600 mt-1">{{ $renewal->new_start_date->format('d/m/Y') }} - {{ $renewal->new_end_date->format('d/m/Y') }}</p>
                             @if($renewal->renewal_note)

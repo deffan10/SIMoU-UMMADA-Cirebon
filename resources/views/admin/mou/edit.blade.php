@@ -92,6 +92,15 @@
         <!-- Periode -->
         <div class="bg-white rounded-xl shadow-sm border p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4"><i class="fas fa-calendar text-orange-500 mr-2"></i>Periode</h3>
+            @if($mou->renewal_count > 0)
+            <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 flex items-start">
+                <i class="fas fa-info-circle mt-0.5 mr-2 text-amber-600 shrink-0"></i>
+                <div>
+                    <span class="font-semibold">Catatan:</span>
+                    <span> MoU ini telah diperpanjang sebanyak <strong>{{ $mou->renewal_count }}x</strong>. Tanggal di bawah adalah periode aktif terkini hasil perpanjangan. Jangan diubah kembali ke tanggal awal jika tidak bermaksud membatalkan perpanjangan.</span>
+                </div>
+            </div>
+            @endif
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>

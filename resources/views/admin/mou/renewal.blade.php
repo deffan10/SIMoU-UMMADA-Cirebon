@@ -18,7 +18,14 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.renewal.store', $mou) }}" method="POST" enctype="multipart/form-data">
+    @if(session('error'))
+    <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl flex items-center">
+        <i class="fas fa-exclamation-circle mr-2 text-red-500"></i>
+        <span>{{ session('error') }}</span>
+    </div>
+    @endif
+
+    <form action="{{ route('admin.renewal.store', $mou) }}" method="POST" enctype="multipart/form-data" onsubmit="this.querySelector('button[type=submit]').disabled=true; this.querySelector('button[type=submit]').innerHTML='<i class=\'fas fa-spinner fa-spin mr-1\'></i> Menyimpan...';">
         @csrf
         <div class="bg-white rounded-xl shadow-sm border p-6 space-y-4">
             <h3 class="text-lg font-semibold text-gray-900"><i class="fas fa-sync text-purple-500 mr-2"></i>Data Perpanjangan Baru</h3>
@@ -29,7 +36,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai Baru *</label>
-                    <input type="date" name="new_end_date" value="{{ old('new_end_date', $mou->end_date->addYears(2)->format('Y-m-d')) }}" required class="w-full rounded-lg border-gray-300 text-sm">
+                    <input type="date" name="new_end_date" value="{{ old('new_end_date', $mou->end_date->copy()->addYears(2)->format('Y-m-d')) }}" required class="w-full rounded-lg border-gray-300 text-sm">
                 </div>
             </div>
             <div>

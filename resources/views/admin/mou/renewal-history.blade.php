@@ -14,8 +14,16 @@
         @forelse($mou->renewals as $renewal)
         <div class="bg-white rounded-xl shadow-sm border p-5">
             <div class="flex items-center justify-between mb-3">
-                <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">Version {{ $renewal->renewal_number + 1 }}</span>
-                <span class="text-sm text-gray-500">{{ $renewal->created_at->format('d M Y H:i') }}</span>
+                <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">Perpanjangan ke-{{ $renewal->renewal_number }}</span>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500">{{ $renewal->created_at->format('d M Y H:i') }}</span>
+                    <form action="{{ route('admin.renewal.destroy', [$mou, $renewal]) }}" method="POST" onsubmit="return confirm('Hapus histori perpanjangan ke-{{ $renewal->renewal_number }} ini? Periode MoU akan disesuaikan otomatis.')">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="text-red-500 hover:text-red-700 text-xs p-1 rounded hover:bg-red-50" title="Hapus perpanjangan ini">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>

@@ -55,6 +55,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/mou/{mou}/renew', [RenewalController::class, 'create'])->name('renewal.create');
         Route::post('/mou/{mou}/renew', [RenewalController::class, 'store'])->name('renewal.store');
         Route::get('/mou/{mou}/renewals', [RenewalController::class, 'history'])->name('renewal.history');
+        Route::delete('/mou/{mou}/renewals/{renewal}', [RenewalController::class, 'destroy'])->name('renewal.destroy');
 
         // Attachments
         Route::post('/mou/{mou}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
